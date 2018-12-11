@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,8 @@ namespace MultiClientServer
     {
         public StreamReader Read;
         public StreamWriter Write;
-
+        private bool ping;
+        object o;
         // Connection heeft 2 constructoren: deze constructor wordt gebruikt als wij CLIENT worden bij een andere SERVER
         public Connection(int port)
         {
@@ -46,9 +48,32 @@ namespace MultiClientServer
             try
             {
                 while (true)
-                    Console.WriteLine(Read.ReadLine());
+                {
+                    string message = Read.ReadLine();
+                    Console.WriteLine(message);
+                    if (message.StartsWith("ping ping"))
+                    {
+                        Program.Buren[Int32.Parse(message.Split()[2])].Write.WriteLine("ping pong");
+                    }
+                    else if (message.StartsWith("ping pong"))
+                    {
+                        ping = false;
+                    }
+                }
             }
             catch { } // Verbinding is kennelijk verbroken
+        }
+        public int Ping(int port)
+        {
+            ping = true;
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (ping)
+            {
+                int x = 2;
+            }
+            stopwatch.Stop();
+            return (int)stopwatch.ElapsedMilliseconds;
         }
     }
 }
