@@ -34,13 +34,29 @@ namespace MultiClientServer
                         Buren.Add(poort, new Connection(poort));
                     }
                 }
+                else if (input.StartsWith("ping"))
+                {
+                    int poort = int.Parse(input.Split()[1]);
+                    if (Buren.ContainsKey(poort))
+                    {
+                        Buren[poort].Write.WriteLine("ping ping " + MijnPoort);
+                        Console.WriteLine((Buren[poort].Ping(poort)));
+                    }
+                    else
+                    {
+                        Console.WriteLine("Hier is al verbinding naar!");
+                    }
+                }
                 else
                 {
                     // Stuur berichtje
                     string[] delen = input.Split(new char[] { ' ' }, 2);
                     int poort = int.Parse(delen[0]);
                     if (!Buren.ContainsKey(poort))
+                    {
                         Console.WriteLine("Hier is al verbinding naar!");
+
+                    }
                     else
                         Buren[poort].Write.WriteLine(MijnPoort + ": " + delen[1]);
                 }
